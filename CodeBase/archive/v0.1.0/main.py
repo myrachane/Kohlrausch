@@ -1,5 +1,14 @@
 from machine import Pin as p
 import time
+import json
+import os
+
+# error handeling to load settings.json
+try:
+    with open("settings.json", "r") as f: variables = json.load(f)
+except:
+    variables = {}
+
 
 # Define columns
 columns = [p(7, p.IN), p(15, p.IN), p(16, p.IN)]
@@ -20,7 +29,8 @@ while True:
         
         for col_idx, col_pin in enumerate(columns):
             if col_pin.value() == 0:  # Key pressed
-                pressed_keys.append(f"r{row_idx+1}c{col_idx+1}")
+                coord = f"r{row_idx+1}c{col_idx+1}"
+                pressed_keys.append(variables.get(coord, coord)) #updated logic with variables from json
         
         row_pin.value(1)  # Deactivate row
     
